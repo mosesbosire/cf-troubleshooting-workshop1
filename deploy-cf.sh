@@ -19,6 +19,8 @@ export BOSH_ALL_PROXY=socks5://localhost:12345
 
 bosh -e "$BOSH_ENVIRONMENT" update-cloud-config cf/cloud-config.yml \
   -v system_lb="$(terraform output -state=terraform/.terraform/terraform.tfstate system_lb_name)" \
+  -v app_lb="$(terraform output -state=terraform/.terraform/terraform.tfstate app_lb_name)" \
+  -v ssh_lb="$(terraform output -state=terraform/.terraform/terraform.tfstate ssh_lb_name)" \
   -v availability_zone="$AVAILABILITY_ZONE" \
   -v private_subnet_range="$(terraform output -state=terraform/.terraform/terraform.tfstate private_subnet_cidr)" \
   -v security_group="$(terraform output -state=terraform/.terraform/terraform.tfstate bosh_security_group_name)" \
@@ -31,7 +33,10 @@ bosh -e "$BOSH_ENVIRONMENT" -d cf deploy cf/cf-deployment/cf-deployment.yml \
   --vars-store credentials/cf-creds.yml \
   -o cf/cf-deployment/operations/scale-to-one-az.yml \
   -o cf/cf-deployment/operations/use-compiled-releases.yml \
+  -o cf/operations/override-app-domains.yml \
+  -o cf/operations/scale-out-diego-cell.yml \
   -o cf/cf-deployment/operations/aws.yml \
   -o cf/operations/rename-disk-labels.yml \
   -v system_domain="sys.$STACK_NAME.training.armakuni.co.uk" \
+  -v app_domains="[app.$STACK_NAME.training.armakuni.co.uk]"
  

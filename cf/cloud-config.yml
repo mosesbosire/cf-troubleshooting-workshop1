@@ -47,17 +47,19 @@ vm_extensions:
 - name: cell_ephemeral_disk
   cloud_properties:
     ephemeral_disk:
-      size: 15000
+      size: 30000
       type: gp2
 - name: cf-router-network-properties
   cloud_properties:
-    elbs: [((system_lb))]
+    elbs:
+      - ((system_lb))
+      - ((app_lb))
 - name: cf-tcp-router-network-properties
   cloud_properties:
     elbs: []
 - name: diego-ssh-proxy-network-properties
   cloud_properties:
-    elbs: []
+    elbs: [((ssh_lb))]
 
 azs:
 - name: z1

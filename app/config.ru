@@ -2,7 +2,7 @@ require "sinatra/base"
 
 class App < Sinatra::Base
 	get "/" do
-		"Hello"
+		"Hello, I'm running on #{`hostname`}"
 	end
 end
 
